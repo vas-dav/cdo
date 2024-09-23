@@ -3,6 +3,7 @@
 #include "tools/buffer.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 const struct CommandLineArg supported_args [] = {
     {
@@ -27,6 +28,34 @@ void usage(void) {
     }
     buffer_append(usage_lines, "\n]");
     buffer_flush(usage_lines);
+}
+
+void init_cmd(void) {
+    return
+}
+
+void create_arg_list(struct ArgList* list, size_t capacity) {
+    list = (struct ArgList*) malloc(sizeof(struct ArgList));
+    list->args = (struct CommandLineArg*) malloc(capacity * sizeof(struct CommandLineArg));
+    list->size = 0;
+    list->capacity = capacity;
+}
+
+void append_arg(struct ArgList* list, struct CommandLineArg arg) {
+    if (list->size + 1 >= list->capacity) {
+        list->capacity *= 2;
+        list->args =
+        (struct CommandLineArg*)
+        realloc(
+            list->args,
+            list->capacity * sizeof(struct CommandLineArg)
+        );
+    }
+    memcpy(
+        list->args + (list->size * sizeof(struct CommandLineArg)),
+        &arg,
+        sizeof(struct CommandLineArg)
+    );
 }
 
 struct CommandLineArg* parse_args(const int argc, char* argv[]) {
