@@ -18,7 +18,18 @@ struct CommandLineArg {
     CmdType type;
 };
 
+struct ArgList {
+    struct CommandLineArg* args;
+    size_t capacity;
+    size_t size;
+};
+
+struct ArgList* supported_arg_list;
+
 struct CommandLineArg* parse_args(const int argc, char* argv[]);
+void init_cmd(void);
+void create_arg_list(struct ArgList* list, size_t capacity);
+void append_arg(struct ArgList* list, struct CommandLineArg arg);
 void usage(void);
 
 #endif /*__CMD_H__*/
