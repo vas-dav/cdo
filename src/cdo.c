@@ -1,6 +1,8 @@
 #include <stdio.h>
 
+#include "cmd.h"
+
 int main (int argc, char *argv[]) {
-  printf("Welcome to %s!", argv[0]);
+  struct CommandLineArg* args = parse_args(argc, argv);
   return 0;
 }
