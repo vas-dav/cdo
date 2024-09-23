@@ -1,7 +1,7 @@
-#include <stdlib.h>
-
 #ifndef __BUFFER_H__
 #define __BUFFER_H__
+
+#include <stdlib.h>
 
 typedef struct {
     char* data;
