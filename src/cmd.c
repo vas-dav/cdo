@@ -8,7 +8,7 @@
 static struct ArgList* supported_args;
 
 static const char* PREDEFINED_ARG_NAMES [] = {
-    "project"
+    "PROJECT"
 };
 
 static const char* PREDEFINED_ARG_DESC [] = {
@@ -16,7 +16,7 @@ static const char* PREDEFINED_ARG_DESC [] = {
 };
 
 static const char* PREDEFINED_ARG_VALUES [] = {
-    NULL
+    "Curernt WD"
 };
 
 void usage(void) {
