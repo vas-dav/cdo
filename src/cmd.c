@@ -75,6 +75,7 @@ void init_cmd(void) {
             LOG_ERROR("Undefined argument iterator %d", i);
         }
     }
+    LOG_DEBUG("Cmd module initialised.")
 }
 
 void exit_cmd(void) {
