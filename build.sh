@@ -3,7 +3,7 @@
 set -xe
 
 CC="gcc"
-FLAGS="-Wall -Wpedantic -ggdb"
+FLAGS="-Wall -ggdb"
 SRCS="$(find ./src -type f -name "*.c")"
 CURRENT_DIR="$(git rev-parse --show-toplevel)"
 BUILD_DIR="${CURRENT_DIR}/build"

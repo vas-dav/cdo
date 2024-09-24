@@ -1,12 +1,13 @@
 #include "buffer.h"
+#include "alloc_wrappers.h"
 #include "log.h"
 
 #include <string.h>
 #include <stdio.h>
 
 Buffer* buffer_create(size_t capacity) {
-    Buffer* buffer = (Buffer*)malloc(sizeof(Buffer));
-    buffer->data = (char*)malloc(capacity);
+    Buffer* buffer = (Buffer*)cdo_malloc(sizeof(Buffer));
+    buffer->data = (char*)cdo_malloc(capacity);
     buffer->size = 0;
     buffer->capacity = capacity;
     return buffer;
@@ -16,7 +17,7 @@ void buffer_append(Buffer* buffer, const char* str) {
     size_t len = strlen(str);
     if (buffer->size + len >= buffer->capacity) {
         buffer->capacity *= 2;
-        buffer->data = (char*)realloc(buffer->data, buffer->capacity);
+        buffer->data = (char*)cdo_realloc(buffer->data, buffer->capacity);
     }
     strcpy(buffer->data + buffer->size, str);
     buffer->size += len;
@@ -31,9 +32,9 @@ void buffer_free(Buffer* buffer) {
     if (!buffer->data || !buffer) {
         LOG_WARNING("Trying to free NULL pointer");
     }
-    free(buffer->data);
+    cdo_free(buffer->data);
     buffer->data = NULL;
-    free(buffer);
+    cdo_free(buffer);
     buffer = NULL;
 }
 

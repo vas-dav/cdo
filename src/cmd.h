@@ -10,6 +10,7 @@
 
 typedef enum {
     ARG_PROJECT,
+    ARG_HELP,
     ARG_COUNT
 } ArgName;
 
