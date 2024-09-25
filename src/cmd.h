@@ -32,6 +32,7 @@ void init_cmd(void);
 void exit_cmd(void);
 struct ArgList* create_arg_list(size_t capacity);
 void append_arg(struct ArgList* list, struct CommandLineArg* arg);
+const char* extract_value_from_arg(struct ArgList* list, ArgNameId id);
 void free_arg_list(struct ArgList* list);
 void usage(void);
 #endif /*__CMD_H__*/
