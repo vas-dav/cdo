@@ -12,6 +12,9 @@ static void __attribute__((constructor)) init_cdo(void) {
 }
 
 int main (int argc, char *argv[]) {
-  struct CommandLineArg* args = parse_args(argc, argv);
+  struct ArgList* args = parse_args(argc, argv);
+  for (size_t i = 0; i < args->size; i++) {
+    printf("Arg: %s, param: %s\n", args->args[i].name, args->args[i].value);
+  }
   return 0;
 }
