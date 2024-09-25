@@ -55,3 +55,6 @@ dkms.conf
 # Build folder
 build/
 
+#VsCode
+.vscode/
+
