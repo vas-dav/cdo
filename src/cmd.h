@@ -12,7 +12,7 @@ typedef enum {
     ARG_PROJECT,
     ARG_HELP,
     ARG_COUNT
-} ArgName;
+} ArgNameId;
 
 struct CommandLineArg {
     char* name;
@@ -26,12 +26,11 @@ struct ArgList {
     size_t size;
 };
 
-struct CommandLineArg* parse_args(const int argc, char* argv[]);
+struct ArgList* parse_args(const int argc, char* argv[]);
 void init_cmd(void);
 void exit_cmd(void);
 struct ArgList* create_arg_list(size_t capacity);
 void append_arg(struct ArgList* list, struct CommandLineArg* arg);
 void free_arg_list(struct ArgList* list);
 void usage(void);
-
 #endif /*__CMD_H__*/

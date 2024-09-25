@@ -5,12 +5,13 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 static struct ArgList* supported_args;
 
 static const char* PREDEFINED_ARG_NAMES [] = {
-    "project",
-    "help"
+    "--project",
+    "--help"
 };
 
 static const char* PREDEFINED_ARG_DESC [] = {
@@ -19,7 +20,7 @@ static const char* PREDEFINED_ARG_DESC [] = {
 };
 
 static const char* PREDEFINED_ARG_VALUES [] = {
-    "Curernt WD",
+    "Curernt Working Directory",
     NULL
 };
 
@@ -42,7 +43,7 @@ void usage(void) {
     buffer_flush(usage_lines);
 }
 
-static struct CommandLineArg* renderArg(ArgName name) {
+static struct CommandLineArg* renderArgById(ArgNameId name) {
     struct CommandLineArg* e = cdo_malloc(sizeof(struct CommandLineArg));
     e->name = NULL;
     e->description = NULL;
@@ -62,6 +63,26 @@ static struct CommandLineArg* renderArg(ArgName name) {
     return e;
 }
 
+static struct CommandLineArg* renderArgByValues(const char* name, const char* description, const char* value) {
+    struct CommandLineArg* e = cdo_malloc(sizeof(struct CommandLineArg));
+    e->name = NULL;
+    e->description = NULL;
+    e->value = NULL;
+    if (name) {
+        e->name = cdo_malloc(strlen(name) + 1);
+        strcpy(e->name, name);
+    }
+    if (description) {
+        e->description = cdo_malloc(strlen(description) + 1);
+        strcpy(e->description, description);
+    }
+    if (value) {
+        e->value = cdo_malloc(strlen(value) + 1);
+        strcpy(e->value, value);
+    }
+    return e;
+}
+
 void init_cmd(void) {
     supported_args = create_arg_list(ARG_COUNT);
     for (int i = 0; i < ARG_COUNT; i++) {
@@ -69,7 +90,7 @@ void init_cmd(void) {
         {
         case ARG_PROJECT:
         case ARG_HELP:
-            append_arg(supported_args, renderArg(i));
+            append_arg(supported_args, renderArgById(i));
             break;
         default:
             LOG_ERROR_EXIT("Undefined argument iterator %d", i);
@@ -117,11 +138,58 @@ void free_arg_list(struct ArgList* list) {
     
 }
 
-struct CommandLineArg* parse_args(const int argc, char* argv[]) {
-    if (argc < 2) {
-        LOG_ERROR("At least 1 argument required.");
-        usage();
-        exit(1);
+static ArgNameId get_arg_name_id_from_str(const char* str) {
+    for (int i = 0; i < ARG_COUNT; i++) {
+        if (strcmp(str, PREDEFINED_ARG_NAMES[i]) == 0)
+            return (ArgNameId)i;
     }
-    return NULL;
+    return ARG_COUNT;
+}
+
+static bool validate_arg_param(const char* str) {
+    for (int i = 0; i < ARG_COUNT; i++) {
+        if (strcmp(str, PREDEFINED_ARG_NAMES[i]) == 0)
+            return false;
+    }
+    return true;
+}
+
+struct ArgList* parse_args(const int argc, char* argv[]) {
+    int initial_capacity = 1;
+    if (argc > 1) {
+        initial_capacity = argc / 2;
+    }
+    struct ArgList* user_args = create_arg_list(initial_capacity);
+    for(int i = 1; i < argc; i++) {
+        ArgNameId current_arg = get_arg_name_id_from_str(argv[i]);
+        switch (current_arg)
+        {
+        case ARG_HELP:
+            usage();
+            break;
+        case ARG_PROJECT:
+            int next_iterator = (i + 1 < argc) ? i + 1 : i;
+            if (!validate_arg_param(argv[next_iterator])) {
+                LOG_ERROR("Argument '%s' requires a value.", PREDEFINED_ARG_NAMES[current_arg]);
+                goto defer;
+            }
+            i = next_iterator;
+            append_arg(
+                user_args, 
+                renderArgByValues(
+                    PREDEFINED_ARG_NAMES[current_arg],
+                    NULL,
+                    argv[next_iterator]
+                )
+            );  
+            break;
+        default:
+            LOG_ERROR("Undefined argument '%s'", argv[i]);
+            goto defer;
+        }
+    }
+    return user_args;
+    defer:
+            usage();
+            exit(1);
 }
