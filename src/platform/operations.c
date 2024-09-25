@@ -44,7 +44,3 @@ const char* convert_relative_to_full_path(const char* relative_path) {
     return full_path;
 }
 
-
-const char* get_platform_name_from_project(const char* project_path) {
-    return NULL;
-}
