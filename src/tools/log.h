@@ -80,7 +80,7 @@ static void create_log_line_simple(const char * _status,
     va_end(args);
     char buffer [LOG_BUFFER_MAX_CAP] = {0};
     int buffer_len = snprintf(buffer, LOG_BUFFER_MAX_CAP,
-                            "[%s] %.*s\n",
+                            "cDo: [%s] %.*s\n",
                             _status,
                             message_len,
                             message);
