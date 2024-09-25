@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #define FAILED_ALLOC_MESSAGE \
-    LOG_ERROR("Allocation failed. Returned pointer is NULL.");
+    LOG_ERROR_EXIT("Allocation failed. Returned pointer is NULL.");
 
 #define cdo_malloc(size) ((void*)({ \
     void *__ptr__ = malloc(size); \

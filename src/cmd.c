@@ -72,10 +72,10 @@ void init_cmd(void) {
             append_arg(supported_args, renderArg(i));
             break;
         default:
-            LOG_ERROR("Undefined argument iterator %d", i);
+            LOG_ERROR_EXIT("Undefined argument iterator %d", i);
         }
     }
-    LOG_DEBUG("Cmd module initialised.")
+    LOG_DEBUG("Cmd module initialised.");
 }
 
 void exit_cmd(void) {
@@ -119,7 +119,7 @@ void free_arg_list(struct ArgList* list) {
 
 struct CommandLineArg* parse_args(const int argc, char* argv[]) {
     if (argc < 2) {
-        LOG_ERROR_USER("At least 1 argument required.");
+        LOG_ERROR("At least 1 argument required.");
         usage();
         exit(1);
     }

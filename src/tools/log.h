@@ -90,21 +90,43 @@ static void create_log_line_simple(const char * _status,
     (cdo_log_enable_color) ? coloredLogLevels[SEVERITY] : plainLogLevels[SEVERITY] \
 )
 
-#define LOG_INFO( fmt, ...)                                        \
-    create_log_line(GET_LOG_SEVERITY_STR(LEVEL_INFO), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__);
+#define LOG_INFO(fmt, ...) do { \
+    if (cdo_log_enable_debug) { \
+        create_log_line(GET_LOG_SEVERITY_STR(LEVEL_INFO), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
+    } else { \
+        create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_INFO), fmt, ##__VA_ARGS__); \
+    } \
+} while (0)
 
-#define LOG_WARNING(fmt, ...)                                        \
-    create_log_line(GET_LOG_SEVERITY_STR(LEVEL_WARNING), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__);
+#define LOG_WARNING(fmt, ...) do { \
+    if (cdo_log_enable_debug) { \
+        create_log_line(GET_LOG_SEVERITY_STR(LEVEL_WARNING), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
+    } else { \
+        create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_WARNING), fmt, ##__VA_ARGS__); \
+    } \
+} while (0)
 
-#define LOG_ERROR(fmt, ...)                                       \
-    create_log_line(GET_LOG_SEVERITY_STR(LEVEL_ERROR), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
-    exit(1);
+#define LOG_ERROR(fmt, ...) do { \
+    if (cdo_log_enable_debug) { \
+        create_log_line(GET_LOG_SEVERITY_STR(LEVEL_ERROR), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
+    } else { \
+        create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_ERROR), fmt, ##__VA_ARGS__); \
+    } \
+} while (0)
 
-#define LOG_ERROR_USER(fmt, ...) \
-    create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_ERROR), fmt, ##__VA_ARGS__);
+#define LOG_ERROR_EXIT(fmt, ...) do { \
+    LOG_ERROR(fmt, ##__VA_ARGS__); \
+    exit(1); \
+} while (0)
 
-#define LOG_DEBUG(fmt, ...)                                        \
-    create_log_line(GET_LOG_SEVERITY_STR(LEVEL_DEBUG), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__);
+#define LOG_DEBUG(fmt, ...) do { \
+    if (cdo_log_enable_debug) { \
+        create_log_line(GET_LOG_SEVERITY_STR(LEVEL_DEBUG), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
+    } else { \
+        create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_DEBUG), fmt, ##__VA_ARGS__); \
+    } \
+} while (0)
+
 
 
 
