@@ -18,9 +18,10 @@
 
 #define cdo_free(ptr) do { \
     if (!ptr) { \
-        LOG_WARNING("Freeing NULL pointer."); \
+        LOG_WARNING("Trying to free NULL pointer. Skipping..."); \
+    } else { \
+        free(ptr); \
     } \
-    free(ptr); \
 } while (0)
 
 #define cdo_calloc(nmemb, size) ((void*)({ \
