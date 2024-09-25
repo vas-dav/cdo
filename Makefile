@@ -2,19 +2,19 @@ CC = gcc
 CFLAGS = -Wall -ggdb
 SRCS = $(shell find ./src -type f -name "*.c")
 BUILD_DIR = $(shell git rev-parse --show-toplevel)/build
-OBJS = $(SRCS:.c=.o)
+OBJS = $(patsubst ./src/%, $(BUILD_DIR)/%, $(SRCS:.c=.o))
 
 all: $(BUILD_DIR)/cdo
 
 $(BUILD_DIR)/cdo: $(OBJS)
-	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $^
 
-%.o: %.c
+$(BUILD_DIR)/%.o: ./src/%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR) $(OBJS)
+	rm -rf $(BUILD_DIR)
 
 .PHONY: all
