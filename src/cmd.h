@@ -18,6 +18,7 @@ struct CommandLineArg {
     char* name;
     char* description;
     char* value;
+    ArgNameId id;
 };
 
 struct ArgList {

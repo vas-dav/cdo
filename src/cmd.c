@@ -48,6 +48,7 @@ static struct CommandLineArg* renderArgById(ArgNameId name) {
     e->name = NULL;
     e->description = NULL;
     e->value = NULL;
+    e->id = name;
     if (PREDEFINED_ARG_NAMES[name]) {
         e->name = cdo_malloc(strlen(PREDEFINED_ARG_NAMES[name]) + 1);
         strcpy(e->name, PREDEFINED_ARG_NAMES[name]);
@@ -63,11 +64,16 @@ static struct CommandLineArg* renderArgById(ArgNameId name) {
     return e;
 }
 
-static struct CommandLineArg* renderArgByValues(const char* name, const char* description, const char* value) {
+static struct CommandLineArg* renderArgByValues(
+    const char* name,
+    const char* description,
+    const char* value,
+    ArgNameId id) {
     struct CommandLineArg* e = cdo_malloc(sizeof(struct CommandLineArg));
     e->name = NULL;
     e->description = NULL;
     e->value = NULL;
+    e->id = id;
     if (name) {
         e->name = cdo_malloc(strlen(name) + 1);
         strcpy(e->name, name);
@@ -179,7 +185,8 @@ struct ArgList* parse_args(const int argc, char* argv[]) {
                 renderArgByValues(
                     PREDEFINED_ARG_NAMES[current_arg],
                     NULL,
-                    argv[next_iterator]
+                    argv[next_iterator],
+                    current_arg
                 )
             );  
             break;
