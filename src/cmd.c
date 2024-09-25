@@ -133,6 +133,15 @@ void append_arg(struct ArgList* list, struct CommandLineArg* arg) {
     list->size += 1;
 }
 
+const char* extract_value_from_arg(struct ArgList* list, ArgNameId id) {
+    for (size_t i = 0; i < ARG_COUNT; i++) {
+        if (list->args[i].id == id) {
+            return list->args[i].value;
+        }
+    }
+    return NULL;
+}
+
 void free_arg_list(struct ArgList* list) {
     for (size_t i = 0; i < ARG_COUNT; i++) {
         cdo_free(list->args[i].name);

@@ -13,8 +13,7 @@ static void __attribute__((constructor)) init_cdo(void) {
 
 int main (int argc, char *argv[]) {
   struct ArgList* args = parse_args(argc, argv);
-  for (size_t i = 0; i < args->size; i++) {
-    printf("Arg: %s, param: %s\n", args->args[i].name, args->args[i].value);
-  }
+  const char* project_path = extract_value_from_arg(args, ARG_PROJECT);
+  LOG_INFO("Project full path: %s", project_path);
   return 0;
 }
