@@ -23,6 +23,15 @@ void buffer_append(Buffer* buffer, const char* str) {
     buffer->size += len;
 }
 
+void buffer_append_c(Buffer* buffer, char c) {
+    if (buffer->size + 1 >= buffer->capacity) {
+        buffer->capacity *= 2;
+        buffer->data = (char*)cdo_realloc(buffer->data, buffer->capacity);
+    }
+    *(buffer->data + buffer->size) = c;
+    buffer->size++;
+}
+
 void buffer_flush(Buffer* buffer) {
     printf("%s", buffer->data);
     buffer_free(buffer);

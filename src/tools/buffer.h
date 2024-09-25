@@ -11,6 +11,7 @@ typedef struct {
 
 Buffer* buffer_create(size_t capacity);
 void buffer_append(Buffer* buffer, const char* str);
+void buffer_append_c(Buffer* buffer, char c);
 void buffer_flush(Buffer* buffer);
 void buffer_free(Buffer* buffer);
 
