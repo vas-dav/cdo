@@ -7,6 +7,7 @@
 
 #define LOG_COLORED_OUTPUT_ENV "CDO_LOG_ENABLE_COLOR"
 #define LOG_DEBUG_MESSAGES_ENV "CDO_LOG_ENABLE_DEBUG"
+#define LOG_VERBOSITY_ENV "CDO_LOG_ENABLE_VERBOSE"
 
 #include <assert.h>
 #define INT_ASSERT(statement) assert(statement)
@@ -35,6 +36,7 @@ static const char* plainLogLevels[] = {
 
 extern char* cdo_log_enable_color;
 extern char* cdo_log_enable_debug;
+extern char* cdo_log_enable_verbose;
 extern void init_log(void);
 
 #define LOG_BUFFER_MAX_CAP 256
@@ -91,7 +93,7 @@ static void create_log_line_simple(const char * _status,
 )
 
 #define LOG_INFO(fmt, ...) do { \
-    if (cdo_log_enable_debug) { \
+    if (cdo_log_enable_verbose) { \
         create_log_line(GET_LOG_SEVERITY_STR(LEVEL_INFO), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
     } else { \
         create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_INFO), fmt, ##__VA_ARGS__); \
@@ -100,14 +102,16 @@ static void create_log_line_simple(const char * _status,
 
 #define LOG_WARNING(fmt, ...) do { \
     if (cdo_log_enable_debug) { \
-        create_log_line(GET_LOG_SEVERITY_STR(LEVEL_WARNING), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
-    } else { \
-        create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_WARNING), fmt, ##__VA_ARGS__); \
+        if (cdo_log_enable_verbose) { \
+            create_log_line(GET_LOG_SEVERITY_STR(LEVEL_WARNING), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
+        } else { \
+            create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_WARNING), fmt, ##__VA_ARGS__); \
+        } \
     } \
 } while (0)
 
 #define LOG_ERROR(fmt, ...) do { \
-    if (cdo_log_enable_debug) { \
+    if (cdo_log_enable_verbose) { \
         create_log_line(GET_LOG_SEVERITY_STR(LEVEL_ERROR), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
     } else { \
         create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_ERROR), fmt, ##__VA_ARGS__); \
@@ -121,9 +125,11 @@ static void create_log_line_simple(const char * _status,
 
 #define LOG_DEBUG(fmt, ...) do { \
     if (cdo_log_enable_debug) { \
-        create_log_line(GET_LOG_SEVERITY_STR(LEVEL_DEBUG), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
-    } else { \
-        create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_DEBUG), fmt, ##__VA_ARGS__); \
+        if (cdo_log_enable_verbose) { \
+            create_log_line(GET_LOG_SEVERITY_STR(LEVEL_DEBUG), __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
+        } else { \
+            create_log_line_simple(GET_LOG_SEVERITY_STR(LEVEL_DEBUG), fmt, ##__VA_ARGS__); \
+        } \
     } \
 } while (0)
 

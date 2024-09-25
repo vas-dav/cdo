@@ -9,7 +9,7 @@
 static struct ArgList* supported_args;
 
 static const char* PREDEFINED_ARG_NAMES [] = {
-    "PROJECT",
+    "project",
     "help"
 };
 
@@ -25,7 +25,7 @@ static const char* PREDEFINED_ARG_VALUES [] = {
 
 void usage(void) {
     Buffer * usage_lines = buffer_create(DEFAULT_USAGE_LINE_LEN);
-    buffer_append(usage_lines, "Usage: cdo [PROJECT] [OPTION]\n");
+    buffer_append(usage_lines, "Usage: cdo [OPTION]...\n");
     buffer_append(usage_lines, "Parse TODO's of the PROJECT.\n\n");
     for (int i = 0; i < ARG_COUNT; i++) {
         buffer_append(usage_lines, supported_args->args[i].name);
