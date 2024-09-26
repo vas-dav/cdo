@@ -11,16 +11,19 @@ static struct ArgList* supported_args;
 
 static const char* PREDEFINED_ARG_NAMES [] = {
     "--project",
+    "--remote",
     "--help"
 };
 
 static const char* PREDEFINED_ARG_DESC [] = {
     "Path to the project to be used for looking up TODO's",
+    "Remote to follow in project's git configuration",
     "Show this message"
 };
 
 static const char* PREDEFINED_ARG_VALUES [] = {
     NULL,
+    "origin",
     NULL
 };
 
@@ -99,6 +102,7 @@ void init_cmd(void) {
         switch (i)
         {
         case ARG_PROJECT:
+        case ARG_REMOTE:
         case ARG_HELP:
             append_arg(supported_args, renderArgById(i));
             break;
@@ -193,8 +197,10 @@ struct ArgList* parse_args(const int argc, char* argv[]) {
         {
         case ARG_HELP:
             usage();
+            exit(1);
             break;
         case ARG_PROJECT:
+        case ARG_REMOTE:
             int next_iterator = (i + 1 < argc) ? i + 1 : i;
             if (!validate_arg_param(argv[next_iterator])) {
                 LOG_ERROR("Argument '%s' requires a value.", PREDEFINED_ARG_NAMES[current_arg]);
