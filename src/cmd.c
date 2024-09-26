@@ -25,6 +25,7 @@ static const char* PREDEFINED_ARG_VALUES [] = {
 };
 
 void usage(void) {
+    LOG_DEBUG("Entering function %s", __func__);
     Buffer * usage_lines = buffer_create(DEFAULT_USAGE_LINE_LEN);
     buffer_append(usage_lines, "Usage: cdo [OPTION]...\n");
     buffer_append(usage_lines, "Parse TODO's of the PROJECT.\n\n");
@@ -44,6 +45,7 @@ void usage(void) {
 }
 
 static struct CommandLineArg* renderArgById(ArgNameId name) {
+    LOG_DEBUG("Entering function %s", __func__);
     struct CommandLineArg* e = cdo_malloc(sizeof(struct CommandLineArg));
     e->name = NULL;
     e->description = NULL;
@@ -69,6 +71,7 @@ static struct CommandLineArg* renderArgByValues(
     const char* description,
     const char* value,
     ArgNameId id) {
+    LOG_DEBUG("Entering function %s", __func__);
     struct CommandLineArg* e = cdo_malloc(sizeof(struct CommandLineArg));
     e->name = NULL;
     e->description = NULL;
@@ -90,6 +93,7 @@ static struct CommandLineArg* renderArgByValues(
 }
 
 void init_cmd(void) {
+    LOG_DEBUG("Entering function %s", __func__);
     supported_args = create_arg_list(ARG_COUNT);
     for (int i = 0; i < ARG_COUNT; i++) {
         switch (i)
@@ -106,10 +110,12 @@ void init_cmd(void) {
 }
 
 void exit_cmd(void) {
+    LOG_DEBUG("Entering function %s", __func__);
     free_arg_list(supported_args);
 }
 
 struct ArgList* create_arg_list(size_t capacity) {
+    LOG_DEBUG("Entering function %s", __func__);
     struct ArgList* list = NULL;
     list = (struct ArgList*) cdo_malloc(sizeof(struct ArgList));
     list->args = (struct CommandLineArg*) cdo_malloc(capacity * sizeof(struct CommandLineArg));
@@ -119,6 +125,7 @@ struct ArgList* create_arg_list(size_t capacity) {
 }
 
 void append_arg(struct ArgList* list, struct CommandLineArg* arg) {
+    LOG_DEBUG("Entering function %s", __func__);
     if (list->size + 1 >= list->capacity) {
         list->capacity *= 2;
         list->args =
@@ -134,6 +141,7 @@ void append_arg(struct ArgList* list, struct CommandLineArg* arg) {
 }
 
 const char* extract_value_from_arg(struct ArgList* list, ArgNameId id) {
+    LOG_DEBUG("Entering function %s", __func__);
     for (size_t i = 0; i < ARG_COUNT; i++) {
         if (list->args[i].id == id) {
             return list->args[i].value;
@@ -143,6 +151,7 @@ const char* extract_value_from_arg(struct ArgList* list, ArgNameId id) {
 }
 
 void free_arg_list(struct ArgList* list) {
+    LOG_DEBUG("Entering function %s", __func__);
     for (size_t i = 0; i < list->size; i++) {
         cdo_free(list->args[i].name);
         cdo_free(list->args[i].description);
@@ -154,6 +163,7 @@ void free_arg_list(struct ArgList* list) {
 }
 
 static ArgNameId get_arg_name_id_from_str(const char* str) {
+    LOG_DEBUG("Entering function %s", __func__);
     for (int i = 0; i < ARG_COUNT; i++) {
         if (strcmp(str, PREDEFINED_ARG_NAMES[i]) == 0)
             return (ArgNameId)i;
@@ -162,6 +172,7 @@ static ArgNameId get_arg_name_id_from_str(const char* str) {
 }
 
 static bool validate_arg_param(const char* str) {
+    LOG_DEBUG("Entering function %s", __func__);
     for (int i = 0; i < ARG_COUNT; i++) {
         if (strcmp(str, PREDEFINED_ARG_NAMES[i]) == 0)
             return false;
@@ -170,6 +181,7 @@ static bool validate_arg_param(const char* str) {
 }
 
 struct ArgList* parse_args(const int argc, char* argv[]) {
+    LOG_DEBUG("Entering function %s", __func__);
     int initial_capacity = 1;
     if (argc > 1) {
         initial_capacity = argc / 2;

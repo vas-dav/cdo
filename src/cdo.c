@@ -15,6 +15,7 @@ static void __attribute__((constructor)) init_cdo(void) {
 }
 
 int main (int argc, char *argv[]) {
+  LOG_DEBUG("Entering function %s", __func__);
   struct ArgList* args = parse_args(argc, argv);
   const char* relative_project_path = extract_value_from_arg(args, ARG_PROJECT);
   const char* full_path = convert_relative_to_full_path(relative_project_path);

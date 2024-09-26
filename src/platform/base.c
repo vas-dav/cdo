@@ -15,6 +15,7 @@ const char* SUPPORTED_PLATFORM_NAMES [] = {
 };
 
 PlaformId identify_platfrom_from_project(const char* project_path) {
+    LOG_DEBUG("Entering function %s", __func__);
     if (project_path == NULL) {
        LOG_ERROR_EXIT("No path supplied for project.");
     }
