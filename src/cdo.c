@@ -21,5 +21,6 @@ int main (int argc, char *argv[]) {
   LOG_INFO("Project full path: %s", full_path);
   identify_platfrom_from_project(full_path);
   cdo_free((void*)full_path);
+  free_arg_list(args);
   return 0;
 }
