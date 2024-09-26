@@ -118,7 +118,6 @@ PlaformId identify_platfrom_from_project(const char* project_path, const char* r
     LOG_DEBUG("Constructed git config file path: %s", git_config_path_buffer->data);
 
     Lines* config_file_lines = read_file_lines(git_config_path_buffer->data);
-    //TODO: from remote "origin" get url
     Lines* git_remote_urls = get_git_remote_urls_from_lines(config_file_lines, remote);
     //TODO: parse remote "origin url" to get platform
     lines_free(config_file_lines);
