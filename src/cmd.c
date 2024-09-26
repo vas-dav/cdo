@@ -143,7 +143,7 @@ const char* extract_value_from_arg(struct ArgList* list, ArgNameId id) {
 }
 
 void free_arg_list(struct ArgList* list) {
-    for (size_t i = 0; i < ARG_COUNT; i++) {
+    for (size_t i = 0; i < list->size; i++) {
         cdo_free(list->args[i].name);
         cdo_free(list->args[i].description);
         cdo_free(list->args[i].value);
