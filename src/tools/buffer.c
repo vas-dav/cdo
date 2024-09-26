@@ -4,6 +4,10 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 Buffer* buffer_create(size_t capacity) {
     Buffer* buffer = (Buffer*)cdo_malloc(sizeof(Buffer));
@@ -38,13 +42,92 @@ void buffer_flush(Buffer* buffer) {
 }
 
 void buffer_free(Buffer* buffer) {
-    if (!buffer->data || !buffer) {
-        LOG_WARNING("Trying to free NULL pointer");
-    }
     cdo_free(buffer->data);
     buffer->data = NULL;
     cdo_free(buffer);
     buffer = NULL;
 }
 
+Lines* lines_create(size_t capacity) {
+    Lines* _lines = (Lines*)cdo_malloc(sizeof(Lines));
+    _lines->lines = (Buffer**)cdo_malloc(capacity * sizeof(Buffer*));
+    _lines->size = 0;
+    _lines->capacity = capacity;
+    return _lines;
+}
 
+Lines* read_file_lines(const char* file_path) {
+    FILE* _file_pointer = fopen(file_path, "r");
+    if (_file_pointer == NULL) {
+        LOG_ERROR_EXIT("Could not open file %s. ERRNO %d; %s",
+                        file_path,
+                        errno,
+                        strerror(errno));
+    }
+    struct stat statbuf;
+    if (stat(file_path, &statbuf) == -1) {
+        LOG_ERROR_EXIT("Could not stat file %s.ERRNO %d; %s",
+                        file_path,
+                        errno,
+                        strerror(errno));
+    }
+    off_t file_size = statbuf.st_size;
+    size_t line_numbers = 0;
+    for (off_t i = 0; i < file_size; i++) {
+        unsigned char current_char = fgetc(_file_pointer);
+        if (current_char == '\n') line_numbers++;
+    }
+    LOG_DEBUG("file %s has %lu lines.", file_path, line_numbers);
+    rewind(_file_pointer);
+
+    Lines* file_lines = lines_create(line_numbers);
+    // TODO: Remove magic number from creating line buffer
+    Buffer* line_buffer = buffer_create(1);
+    for (off_t i = 0; i < file_size; i++) {
+        unsigned char current_char = fgetc(_file_pointer);
+        if (current_char == '\n') {
+            buffer_append_c(line_buffer, '\0');
+            lines_append(file_lines, line_buffer);
+            line_buffer->size = 0;
+        } else {
+            buffer_append_c(line_buffer, current_char);
+        }
+    }
+    buffer_free(line_buffer);
+    fclose(_file_pointer);
+
+    return file_lines;
+}
+
+void lines_append(Lines* lines, Buffer* buffer) {
+    if (lines->size + 1 >= lines->capacity) {
+        lines->capacity *= 2;
+        lines->lines = (Buffer**)cdo_realloc(lines->lines, lines->capacity * sizeof(Buffer*));
+    }
+    Buffer* new_buffer = buffer_create(buffer->size + 1);
+    new_buffer->size = buffer->size;
+    memcpy(new_buffer->data, buffer->data, buffer->size + 1);
+    lines->lines[lines->size] = new_buffer;
+    lines->size++;
+}
+
+void lines_flush(Lines* lines) {
+    for(size_t i = 0; i < lines->size; i++) {
+        printf("%s\n", lines->lines[i]->data);
+        buffer_free(lines->lines[i]);
+    }
+    cdo_free(lines->lines);
+    lines->lines = NULL;
+    cdo_free(lines);
+    lines = NULL;
+}
+
+void lines_free(Lines* lines) {
+    for(size_t i = 0; i < lines->size; i++) {
+        buffer_free(lines->lines[i]);
+    }
+    cdo_free(lines->lines);
+    lines->lines = NULL;
+    cdo_free(lines);
+    lines = NULL;
+}

@@ -4,6 +4,7 @@
 
 #include "cmd.h"
 #include "tools/log.h"
+#include "tools/alloc_wrappers.h"
 #include "platform/operations.h"
 #include "platform/base.h"
 
@@ -19,5 +20,6 @@ int main (int argc, char *argv[]) {
   const char* full_path = convert_relative_to_full_path(relative_project_path);
   LOG_INFO("Project full path: %s", full_path);
   identify_platfrom_from_project(full_path);
+  cdo_free((void*)full_path);
   return 0;
 }
