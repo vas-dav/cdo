@@ -20,7 +20,7 @@ static const char* PREDEFINED_ARG_DESC [] = {
 };
 
 static const char* PREDEFINED_ARG_VALUES [] = {
-    "Curernt Working Directory",
+    NULL,
     NULL
 };
 
@@ -147,7 +147,7 @@ const char* extract_value_from_arg(struct ArgList* list, ArgNameId id) {
             return list->args[i].value;
         }
     }
-    return NULL;
+    return PREDEFINED_ARG_VALUES[id];
 }
 
 void free_arg_list(struct ArgList* list) {
