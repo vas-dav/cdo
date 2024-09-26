@@ -3,25 +3,28 @@
 #include <stdio.h>
 
 #include "cmd.h"
-#include "tools/log.h"
-#include "tools/alloc_wrappers.h"
-#include "platform/operations.h"
 #include "platform/base.h"
+#include "platform/operations.h"
+#include "tools/alloc_wrappers.h"
+#include "tools/log.h"
 
 static void __attribute__((constructor)) init_cdo(void) {
-  atexit(exit_cmd);
-  init_log();
-  init_cmd();
+	atexit(exit_cmd);
+	init_log();
+	init_cmd();
 }
 
-int main (int argc, char *argv[]) {
-  LOG_DEBUG("Entering function %s", __func__);
-  struct ArgList* args = parse_args(argc, argv);
-  const char* relative_project_path = extract_value_from_arg(args, ARG_PROJECT);
-  const char* full_path = convert_relative_to_full_path(relative_project_path);
-  LOG_INFO("Project full path: %s", full_path);
-  identify_platfrom_from_project(full_path);
-  cdo_free((void*)full_path);
-  free_arg_list(args);
-  return 0;
+int main(int argc, char* argv[]) {
+	LOG_DEBUG("Entering function %s", __func__);
+	struct ArgList* args = parse_args(argc, argv);
+
+	const char* project_path = convert_relative_to_full_path(extract_value_from_arg(args, ARG_PROJECT));
+	LOG_INFO("Project full path: %s", project_path);
+	PlaformId project_platform_id = identify_platfrom_from_project(
+	    project_path,
+	    extract_value_from_arg(args, ARG_REMOTE));
+
+	cdo_free((void*)project_path);
+	free_arg_list(args);
+	return 0;
 }

@@ -11,6 +11,6 @@ typedef enum PlaformId {
 
 extern const char* SUPPORTED_PLATFORM_NAMES [];
 
-PlaformId identify_platfrom_from_project(const char* project_path);
+PlaformId identify_platfrom_from_project(const char* project_path, const char* remote);
 
 #endif /*__PLATFORM_BASE_H__*/
