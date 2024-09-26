@@ -22,7 +22,7 @@ void buffer_append(Buffer* buffer, const char* str) {
     LOG_DEBUG("Entering function %s", __func__);
     size_t len = strlen(str);
     if (buffer->size + len >= buffer->capacity) {
-        buffer->capacity *= 2;
+        buffer->capacity = buffer->size + len;
         buffer->data = (char*)cdo_realloc(buffer->data, buffer->capacity);
     }
     strcpy(buffer->data + buffer->size, str);
