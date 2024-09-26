@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 Buffer* buffer_create(size_t capacity) {
+    LOG_DEBUG("Entering function %s", __func__);
     Buffer* buffer = (Buffer*)cdo_malloc(sizeof(Buffer));
     buffer->data = (char*)cdo_malloc(capacity);
     buffer->size = 0;
@@ -18,6 +19,7 @@ Buffer* buffer_create(size_t capacity) {
 }
 
 void buffer_append(Buffer* buffer, const char* str) {
+    LOG_DEBUG("Entering function %s", __func__);
     size_t len = strlen(str);
     if (buffer->size + len >= buffer->capacity) {
         buffer->capacity *= 2;
@@ -28,6 +30,7 @@ void buffer_append(Buffer* buffer, const char* str) {
 }
 
 void buffer_append_c(Buffer* buffer, char c) {
+    LOG_DEBUG("Entering function %s", __func__);
     if (buffer->size + 1 >= buffer->capacity) {
         buffer->capacity *= 2;
         buffer->data = (char*)cdo_realloc(buffer->data, buffer->capacity);
@@ -37,11 +40,13 @@ void buffer_append_c(Buffer* buffer, char c) {
 }
 
 void buffer_flush(Buffer* buffer) {
+    LOG_DEBUG("Entering function %s", __func__);
     printf("%s", buffer->data);
     buffer_free(buffer);
 }
 
 void buffer_free(Buffer* buffer) {
+    LOG_DEBUG("Entering function %s", __func__);
     cdo_free(buffer->data);
     buffer->data = NULL;
     cdo_free(buffer);
@@ -49,6 +54,7 @@ void buffer_free(Buffer* buffer) {
 }
 
 Lines* lines_create(size_t capacity) {
+    LOG_DEBUG("Entering function %s", __func__);
     Lines* _lines = (Lines*)cdo_malloc(sizeof(Lines));
     _lines->lines = (Buffer**)cdo_malloc(capacity * sizeof(Buffer*));
     _lines->size = 0;
@@ -57,6 +63,7 @@ Lines* lines_create(size_t capacity) {
 }
 
 Lines* read_file_lines(const char* file_path) {
+    LOG_DEBUG("Entering function %s", __func__);
     FILE* _file_pointer = fopen(file_path, "r");
     if (_file_pointer == NULL) {
         LOG_ERROR_EXIT("Could not open file %s. ERRNO %d; %s",
@@ -100,6 +107,7 @@ Lines* read_file_lines(const char* file_path) {
 }
 
 void lines_append(Lines* lines, Buffer* buffer) {
+    LOG_DEBUG("Entering function %s", __func__);
     if (lines->size + 1 >= lines->capacity) {
         lines->capacity *= 2;
         lines->lines = (Buffer**)cdo_realloc(lines->lines, lines->capacity * sizeof(Buffer*));
@@ -112,6 +120,7 @@ void lines_append(Lines* lines, Buffer* buffer) {
 }
 
 void lines_flush(Lines* lines) {
+    LOG_DEBUG("Entering function %s", __func__);
     for(size_t i = 0; i < lines->size; i++) {
         printf("%s\n", lines->lines[i]->data);
         buffer_free(lines->lines[i]);
@@ -123,6 +132,7 @@ void lines_flush(Lines* lines) {
 }
 
 void lines_free(Lines* lines) {
+    LOG_DEBUG("Entering function %s", __func__);
     for(size_t i = 0; i < lines->size; i++) {
         buffer_free(lines->lines[i]);
     }
