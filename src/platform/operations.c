@@ -7,6 +7,7 @@
 #include <errno.h>
 
 const char* convert_relative_to_full_path(const char* relative_path) {
+    //TODO: generate correct path when relative path is ../ or etc
     LOG_DEBUG("Entering convert_relative_to_full_path function");
 
     char* cwd;

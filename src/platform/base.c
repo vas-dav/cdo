@@ -24,6 +24,8 @@ PlaformId identify_platfrom_from_project(const char* project_path) {
     LOG_DEBUG("Constructed git config file path: %s", git_config_path_buffer->data);
 
     Lines* config_file_lines = read_file_lines(git_config_path_buffer->data);
+    //TODO: from remote "origin" get url
+    //TODO: parse remote "origin url" to get platform
     lines_flush(config_file_lines);
     buffer_free(git_config_path_buffer);
     return PL_UNRECOGNIZED;
