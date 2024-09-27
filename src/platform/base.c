@@ -15,7 +15,8 @@
 
 const char* SUPPORTED_PLATFORM_NAMES[] = {
     "github.com",
-    "gitlab.com"};
+    "gitlab.com",
+    "Unrecognized"};
 
 static void throw_regex_error(int errcode, const regex_t* preg, const char* str) {
 	char regex_error_buffer[REGEX_ERROR_STR_MAX_LEN] = {0};
