@@ -34,6 +34,42 @@ static bool parse_regex_result(int value) {
 	}
 }
 
+static PlaformId get_platfrom_id_from_string(const char* str) {
+    PlaformId result = PL_UNRECOGNIZED;
+    RegexWrapper regexes[PL_UNRECOGNIZED] = {
+	    {.regex_pattern = SUPPORTED_PLATFORM_NAMES[PL_GITHUB]},
+	    {.regex_pattern = SUPPORTED_PLATFORM_NAMES[PL_GITLAB]}};
+	for (size_t i = 0; i < PL_UNRECOGNIZED; i++) {
+		int value = regcomp(&(regexes[i].regex_holder), regexes[i].regex_pattern, 0);
+		if (value != 0) throw_regex_error(value, &(regexes[i].regex_holder), regexes[i].regex_pattern);
+        if (parse_regex_result(regexec(
+		        &(regexes[i].regex_holder),
+		        str,
+		        0, NULL, 0))
+        ) {
+            result = i;
+        }
+        regfree(&(regexes[i].regex_holder));
+	}
+    return result;
+}
+
+static PlatformIdList* identify_remote_urls(Lines* remote_urls) {
+    if (remote_urls->size == 0) {
+        LOG_ERROR_EXIT("Git config does not have any remote urls.");
+    }
+
+    PlatformIdList* platforms = cdo_calloc(1, sizeof(PlatformIdList));
+    platforms->size = remote_urls->size;
+    platforms->ids = cdo_malloc(platforms->size * sizeof(PlaformId));
+
+    for(size_t i = 0; i < remote_urls->size; i++) {
+        platforms->ids[i] = get_platfrom_id_from_string(remote_urls->lines[i]->data);
+    }
+
+    return platforms;
+}
+
 static Lines* get_git_remote_urls_from_lines(Lines* lines, const char* remote) {
 	LOG_DEBUG("Entering function %s", __func__);
 	char config_remote_line_rg[GIT_CONFIG_REMOTE_STRING_MAX_LEN] = {0};
@@ -53,7 +89,7 @@ static Lines* get_git_remote_urls_from_lines(Lines* lines, const char* remote) {
 	for (size_t i = 0; i < GIT_CFG_RG_COUNT; i++) {
 		int value = regcomp(&(regexes[i].regex_holder), regexes[i].regex_pattern, 0);
 		if (value != 0) throw_regex_error(value, &(regexes[i].regex_holder), regexes[i].regex_pattern);
-	}
+    }
 
 	bool remote_section_found = false;
 	bool inside_remote_section = false;
@@ -118,14 +154,10 @@ PlatformIdList* identify_platfroms_from_project(const char* project_path, const 
 
 	Lines* config_file_lines = read_file_lines(git_config_path_buffer->data);
 	Lines* git_remote_urls = get_git_remote_urls_from_lines(config_file_lines, remote);
-
-    PlatformIdList* platforms = cdo_calloc(1, sizeof(PlatformIdList));
-    platforms->size = git_remote_urls->size;
-    platforms->ids = cdo_malloc(platforms->size * sizeof(PlaformId));
-	// TODO: parse remote "origin url" to get platform
+    PlatformIdList* platforms = identify_remote_urls(git_remote_urls);
 
 	lines_free(config_file_lines);
-	lines_flush(git_remote_urls);
+	lines_free(git_remote_urls);
 	buffer_free(git_config_path_buffer);
-	return NULL;
+	return platforms;
 }

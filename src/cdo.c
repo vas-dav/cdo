@@ -23,7 +23,10 @@ int main(int argc, char* argv[]) {
 	PlatformIdList* project_platforms = identify_platfroms_from_project(
 	    project_path,
 	    extract_value_from_arg(args, ARG_REMOTE));
-
+	LOG_INFO("Project platforms:");
+	for (size_t i = 0; i < project_platforms->size; i++) {
+		LOG_INFO("%s", SUPPORTED_PLATFORM_NAMES[project_platforms->ids[i]]);
+	}
 	cdo_free((void*)project_path);
 	free_arg_list(args);
 	return 0;
