@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
 	const char* project_path = convert_relative_to_full_path(extract_value_from_arg(args, ARG_PROJECT));
 	LOG_INFO("Project full path: %s", project_path);
-	PlaformId project_platform_id = identify_platfrom_from_project(
+	PlatformIdList* project_platforms = identify_platfroms_from_project(
 	    project_path,
 	    extract_value_from_arg(args, ARG_REMOTE));
 

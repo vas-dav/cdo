@@ -15,6 +15,11 @@ typedef enum PlaformId {
     PL_UNRECOGNIZED
 } PlaformId;
 
+typedef struct PlatformIdList {
+    PlaformId* ids;
+    size_t size;
+} PlatformIdList;
+
 typedef enum GitConfigRegexes {
     GIT_CFG_RG_USER_GIVEN_REMOTE,
     GIT_CFG_RG_NEXT_SECTION,
@@ -29,6 +34,6 @@ typedef struct RegexWrapper {
 
 extern const char* SUPPORTED_PLATFORM_NAMES [];
 
-PlaformId identify_platfrom_from_project(const char* project_path, const char* remote);
+PlatformIdList* identify_platfroms_from_project(const char* project_path, const char* remote);
 
 #endif /*__PLATFORM_BASE_H__*/
